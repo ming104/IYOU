@@ -1,15 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerControl : MonoBehaviour
 {
-    public float MoveSpeed;
+    public GameObject Player;
 
+    public float MoveSpeed;
+    public int Score;
+
+    public TextMeshProUGUI ScoreText;
+
+    public GameObject[] Soul;
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(SoulCreate());
+        Score = 0;
     }
 
     // Update is called once per frame
@@ -24,6 +33,7 @@ public class PlayerControl : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().color = Color.white;
         }
+        ScoreText.text = "Score : " + Score;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -31,6 +41,57 @@ public class PlayerControl : MonoBehaviour
         if(collision.gameObject.CompareTag("WALL"))
         {
             GetComponent<SpriteRenderer>().color = collision.collider.GetComponent<SpriteRenderer>().color;
+
+            StopCoroutine("ColorBack");
+            StartCoroutine("ColorBack");
         }
+    }
+
+    IEnumerator ColorBack()
+    {
+        yield return new WaitForSeconds(3f);
+        GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
+    IEnumerator SoulCreate()
+    {
+        float x = Random.Range(-5.5f, 5.5f);
+        float y = Random.Range(-3f, 3f);
+        Vector3 pos = new Vector3(x, y, 0);
+
+        int Index = Random.Range(0, 4);
+        yield return new WaitForSeconds(3f);
+
+        Instantiate(Soul[Index], pos, Quaternion.identity);
+
+        StartCoroutine(SoulCreate());
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        float x = Random.Range(-5.5f, 5.5f);
+        float y = Random.Range(-3f, 3f);
+        if (other.CompareTag("SOUL"))
+       {
+            if(Player.GetComponent<SpriteRenderer>().color == other.GetComponent<SpriteRenderer>().color)
+            {
+                Destroy(other.gameObject);
+                MoveSpeed++;
+                GetComponent<AudioSource>().Play();
+                Score++;
+                
+            }
+            if (Player.GetComponent<SpriteRenderer>().color != other.GetComponent<SpriteRenderer>().color)
+            {
+                other.gameObject.transform.position = new Vector3( x, y, 0);
+                MoveSpeed--;
+                if (Score > 0)
+                {
+                    Score--;
+                }
+            }
+        }
+
+
     }
 }
