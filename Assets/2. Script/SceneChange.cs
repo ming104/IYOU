@@ -21,4 +21,9 @@ public class SceneChange : MonoBehaviour
     {
         SceneManager.LoadScene("MAIN");
     }
+
+    public void BackButton()
+    {
+        SceneManager.LoadScene("LOBY");
+    }
 }

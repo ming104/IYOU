@@ -91,7 +91,25 @@ public class PlayerControl : MonoBehaviour
                 }
             }
         }
+    }
 
+    public void Left()
+    {
+        transform.position += new Vector3(-1, 0, 0) * MoveSpeed * 0.1f;
+    }
 
+    public void Right()
+    {
+        transform.position += new Vector3(1, 0, 0) * MoveSpeed * 0.1f;
+    }
+
+    public void Up()
+    {
+        transform.position += new Vector3(0, 1, 0) * MoveSpeed * 0.1f;
+    }
+
+    public void Down()
+    {
+        transform.position += new Vector3(0, -1, 0) * MoveSpeed * 0.1f;
     }
 }
